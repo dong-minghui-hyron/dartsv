@@ -42,11 +42,12 @@ mixin DataLockMixin on _DataLockBuilder implements LockingScriptBuilder {
 
         var encodedData = HEX.encode(entry);
 
-        if (len < OpCodes.OP_PUSHDATA1) {
-          scriptPubkey = scriptPubkey + sprintf(' %s 0x%s', [len, encodedData]);
-        } else {
-          scriptPubkey = scriptPubkey + sprintf(' %s %s 0x%s', [OpCodes.fromNum(opcodenum), len, encodedData]);
-        }
+        scriptPubkey = scriptPubkey + sprintf(' %s 0x%s', [len, encodedData]);
+        // if (len < OpCodes.OP_PUSHDATA1) {
+        //   scriptPubkey = scriptPubkey + sprintf(' %s 0x%s', [len, encodedData]);
+        // } else {
+        //   scriptPubkey = scriptPubkey + sprintf(' %s %s 0x%s', [OpCodes.fromNum(opcodenum), len, encodedData]);
+        // }
       }
 
     });

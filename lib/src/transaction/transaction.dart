@@ -360,13 +360,20 @@ class Transaction{
     ///
     /// Returns an instance of the current Transaction as part of the builder pattern.
     ///
-    Transaction addData(List<int> data, {DataLockBuilder? scriptBuilder = null}) {
+    Transaction addData(List<List<int>> data) {
 
-        scriptBuilder ??= DataLockBuilder(data) ;
+        DataLockBuilder? scriptBuilder;
+        data.forEach((element) {
+            if( scriptBuilder == null ) {
+                scriptBuilder = DataLockBuilder(element);
+            } else {
+                scriptBuilder?.addBuffer(element);
+            }
+        });
 
         var dataOut =  TransactionOutput(scriptBuilder: scriptBuilder);
-        dataOut.script = scriptBuilder.getScriptPubkey(); //FIXME: This needs to move into new ScriptBuilder interface
-        dataOut.satoshis = BigInt.zero;
+        // dataOut.script = scriptBuilder.getScriptPubkey(); //FIXME: This needs to move into new ScriptBuilder interface
+        // dataOut.satoshis = BigInt.zero;
 
         _txnOutputs.add(dataOut);
 
@@ -393,8 +400,8 @@ class Transaction{
         }
 
         var dataOut =  TransactionOutput(scriptBuilder: scriptBuilder);
-        dataOut.script = scriptBuilder.getScriptPubkey(); //FIXME: This needs to move into new ScriptBuilder interface
-        dataOut.satoshis = BigInt.zero;
+        // dataOut.script = scriptBuilder.getScriptPubkey(); //FIXME: This needs to move into new ScriptBuilder interface
+        // dataOut.satoshis = BigInt.zero;
 
         _txnOutputs.add(dataOut);
 
