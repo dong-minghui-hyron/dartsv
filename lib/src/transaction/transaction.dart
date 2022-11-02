@@ -128,7 +128,8 @@ class Transaction{
     //Default, zero-argument constructor
     Transaction();
 
-    var _feePerKb = FEE_PER_KB;
+    // var _feePerKb = FEE_PER_KB;
+    var _feeRate = 0.25;
 
     /// Default constructor. Start empty, use the builder pattern to
     /// build a transaction.
@@ -569,8 +570,8 @@ class Transaction{
         return this;
     }
 
-    Transaction withFeePerKb(int Fee) {
-        _feePerKb = Fee;
+    Transaction withFeePerKb(int feeRate) {
+        _feeRate = feeRate;
         _updateChangeOutput();
         return this;
     }
@@ -940,11 +941,11 @@ class Transaction{
         var estimatedSize = _estimateSize();
         BigInt available = _getUnspentValue();
 
-        var fee = BigInt.from((estimatedSize / 1000 * _feePerKb).ceil());
+        var fee = BigInt.from((estimatedSize * _feeRate).ceil());
         if (available > fee) {
             estimatedSize += CHANGE_OUTPUT_MAX_SIZE;
         }
-        fee = BigInt.from((estimatedSize / 1000 * _feePerKb).ceil());
+        fee = BigInt.from((estimatedSize * _feeRate).ceil());
 
         return fee;
     }
