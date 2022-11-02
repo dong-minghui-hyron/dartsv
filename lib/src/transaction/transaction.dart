@@ -129,7 +129,7 @@ class Transaction{
     Transaction();
 
     // var _feePerKb = FEE_PER_KB;
-    var _feeRate = 0.25;
+    double _feeRate = 0.25;
 
     /// Default constructor. Start empty, use the builder pattern to
     /// build a transaction.
@@ -570,7 +570,7 @@ class Transaction{
         return this;
     }
 
-    Transaction withFeePerKb(int feeRate) {
+    Transaction withFeePerb(double feeRate) {
         _feeRate = feeRate;
         _updateChangeOutput();
         return this;
