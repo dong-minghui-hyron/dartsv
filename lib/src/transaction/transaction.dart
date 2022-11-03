@@ -943,7 +943,7 @@ class Transaction{
 
         var fee = BigInt.from((estimatedSize * _feeRate).ceil());
         if (available > fee) {
-            estimatedSize += CHANGE_OUTPUT_MAX_SIZE;
+            estimatedSize += 34 + varIntWriter(_txnInputs.length).length + varIntWriter(_txnOutputs.length + 1).length;
         }
         fee = BigInt.from((estimatedSize * _feeRate).ceil());
 
@@ -951,15 +951,17 @@ class Transaction{
     }
 
     int _estimateSize() {
-        var result = MAXIMUM_EXTRA_SIZE;
+        // var result = MAXIMUM_EXTRA_SIZE;
+        var result = 4 + varIntWriter(_txnInputs.length).length + varIntWriter(_txnOutputs.length).length;
         _txnInputs.forEach((input) {
-            result += SCRIPT_MAX_SIZE; //TODO: we're only spending P2PKH atm.
+            result += SCRIPT_MAX_SIZE;
         });
 
         _txnOutputs.forEach((output) {
-            result += HEX
+            var len = HEX
                 .decode(output.script.toHex())
-                .length + 9; // <---- HOW DO WE CALCULATE SCRIPT FROM JUST AN ADDRESS !? AND LENGTH ???
+                .length;
+            result += 8 + varIntWriter(len).length + len; // <---- HOW DO WE CALCULATE SCRIPT FROM JUST AN ADDRESS !? AND LENGTH ???
         });
 
         return result;
