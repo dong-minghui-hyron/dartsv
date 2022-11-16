@@ -94,7 +94,8 @@ class TransactionInput {
 
         writer.writeUint32(_prevTxnOutputIndex!, Endian.little);
 
-        var scriptHex = HEX.decode(_scriptBuilder!.getScriptSig().toHex());
+        // var scriptHex = HEX.decode(_scriptBuilder!.getScriptSig().toHex());
+        var scriptHex = _scriptBuilder!.getScriptSig().buffer.toList();
 
         writer.write(varIntWriter(scriptHex.length).toList(), copy: true);
         writer.write(scriptHex, copy: true);

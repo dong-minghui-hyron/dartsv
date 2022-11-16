@@ -6,52 +6,21 @@ import 'package:dartsv/src/exceptions.dart';
 import 'package:dartsv/src/script/opcodes.dart';
 import 'package:dartsv/src/script/svscript.dart';
 import 'package:dartsv/src/transaction/locking_script_builder.dart';
-import 'dart:math';
-import 'package:hex/hex.dart';
-import 'package:sprintf/sprintf.dart';
 
 mixin DataLockMixin on _DataLockBuilder implements LockingScriptBuilder {
 
   @override
   SVScript getScriptPubkey(){
-
-    if (dataStack == null || dataStack.isEmpty) {
-      return SVScript.fromString("OP_FALSE OP_RETURN");
-    }
-
-    var scriptPubkey = 'OP_FALSE OP_RETURN';
+    
+    SVScript script = SVScript();
+    script.add(OpCodes.OP_FALSE);
+    script.add(OpCodes.OP_RETURN);
 
     dataStack.forEach((entry) {
-
-      if (entry != null && HEX.encode(entry).isNotEmpty){
-
-        var opcodenum;
-        var len = entry.length;
-
-        if (len >= 0 && len < OpCodes.OP_PUSHDATA1) {
-          opcodenum = len;
-        } else if (len < pow(2, 8)) {
-          opcodenum = OpCodes.OP_PUSHDATA1;
-        } else if (len < pow(2, 16)) {
-          opcodenum = OpCodes.OP_PUSHDATA2;
-        } else if (len < pow(2, 32)) {
-          opcodenum = OpCodes.OP_PUSHDATA4;
-        } else {
-          throw new ScriptException("You can't push that much data");
-        }
-
-        var encodedData = HEX.encode(entry);
-
-        if (len < OpCodes.OP_PUSHDATA1) {
-          scriptPubkey = scriptPubkey + sprintf(' %s 0x%s', [len, encodedData]);
-        } else {
-          scriptPubkey = scriptPubkey + sprintf(' %s %s 0x%s', [OpCodes.fromNum(opcodenum), len, encodedData]);
-        }
-      }
-
+      script.add(entry);
     });
 
-    return SVScript.fromString(scriptPubkey);
+    return script;
   }
 }
 

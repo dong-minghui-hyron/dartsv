@@ -86,7 +86,8 @@ class TransactionOutput {
             .toList());
 
         //add scriptPubKey size - varInt
-        var scriptHex = HEX.decode(this.script.toHex());
+        // var scriptHex = HEX.decode(this.script.toHex());
+        var scriptHex = this.script.buffer.toList();
         var varIntVal = varIntWriter(scriptHex.length);
         buffer.addAll(varIntVal);
 
